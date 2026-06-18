@@ -1,7 +1,9 @@
 # -_proyecto_factorizacion_de_derivadas_- :.
 # Proyecto Factorización de Derivadas:
 
-<img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/d63f6d0f-bbbe-4fd8-93ee-e7921ebea4e2" />  
+<img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/d63f6d0f-bbbe-4fd8-93ee-e7921ebea4e2" />
+
+<img width="2557" height="1079" alt="image" src="https://github.com/user-attachments/assets/aa330e1a-0e59-4754-8cd2-7f3cb856a2e3" />            
 
 ```
 ## Java 21 + IntelliJ IDEA + Swing + Oracle Database 19c .
