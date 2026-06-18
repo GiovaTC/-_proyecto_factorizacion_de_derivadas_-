@@ -28,5 +28,5 @@ public class Derivada {
 
     public void setFactorizacion(String factorizacion) {
         this.factorizacion = factorizacion;
-    }   
+    }
 }
