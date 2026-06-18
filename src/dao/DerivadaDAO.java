@@ -32,4 +32,4 @@ public class DerivadaDAO {
             e.printStackTrace();
         }
     }
-}   
+}
