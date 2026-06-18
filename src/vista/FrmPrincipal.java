@@ -10,50 +10,77 @@ import java.awt.*;
 public class FrmPrincipal extends JFrame {
 
     private JTextField txtFuncion;
-    private JTextField txtDerivada;
-    private JButton btnCalcular;
+    private JTextArea txtResultado;
+
+    private JButton btnDerivar;
+    private JButton btnGuardar;
     private JButton btnLimpiar;
     private JButton btnSalir;
 
+    private CalculadoraDerivadas calculadora;
+    private DerivadaDAO dao;
+
     public FrmPrincipal() {
 
+        calculadora = new CalculadoraDerivadas();
+        dao = new DerivadaDAO();
+
+        inicializarComponentes();
+        eventos();
+    }
+
+    private void inicializarComponentes() {
+
         setTitle("Factorización de Derivadas");
-        setSize(500, 220);
+        setSize(700, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10,10));
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
+        JPanel panelSuperior = new JPanel(new BorderLayout(5,5));
 
-        panel.add(new JLabel("Función:"));
+        JLabel lblFuncion = new JLabel("Función:");
+
         txtFuncion = new JTextField();
-        panel.add(txtFuncion);
 
-        panel.add(new JLabel("Resultado:"));
-        txtDerivada = new JTextField();
-        txtDerivada.setEditable(false);
-        panel.add(txtDerivada);
+        panelSuperior.add(lblFuncion, BorderLayout.WEST);
+        panelSuperior.add(txtFuncion, BorderLayout.CENTER);
 
-        btnCalcular = new JButton("Calcular");
+        add(panelSuperior, BorderLayout.NORTH);
+
+        txtResultado = new JTextArea();
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        JScrollPane scroll = new JScrollPane(txtResultado);
+
+        add(scroll, BorderLayout.CENTER);
+
+        JPanel panelBotones = new JPanel(new FlowLayout());
+
+        btnDerivar = new JButton("Derivar");
+        btnGuardar = new JButton("Guardar");
         btnLimpiar = new JButton("Limpiar");
-
-        panel.add(btnCalcular);
-        panel.add(btnLimpiar);
-
-        add(panel, BorderLayout.CENTER);
-
         btnSalir = new JButton("Salir");
-        add(btnSalir, BorderLayout.SOUTH);
 
-        btnCalcular.addActionListener(e -> calcular());
+        panelBotones.add(btnDerivar);
+        panelBotones.add(btnGuardar);
+        panelBotones.add(btnLimpiar);
+        panelBotones.add(btnSalir);
 
-        btnLimpiar.addActionListener(e -> {
-            txtFuncion.setText("");
-            txtDerivada.setText("");
-            txtFuncion.requestFocus();
-        });
+        add(panelBotones, BorderLayout.SOUTH);
+    }
+
+    private void eventos() {
+
+        btnDerivar.addActionListener(e -> calcular());
+
+        btnGuardar.addActionListener(e -> guardar());
+
+        btnLimpiar.addActionListener(e -> limpiar());
 
         btnSalir.addActionListener(e -> System.exit(0));
+
     }
 
     private void calcular() {
@@ -61,36 +88,80 @@ public class FrmPrincipal extends JFrame {
         String funcion = txtFuncion.getText().trim();
 
         if (funcion.isEmpty()) {
+
             JOptionPane.showMessageDialog(
                     this,
                     "Ingrese una función.",
                     "Aviso",
-                    JOptionPane.WARNING_MESSAGE
-            );
+                    JOptionPane.WARNING_MESSAGE);
+
+            txtFuncion.requestFocus();
             return;
         }
 
-        CalculadoraDerivadas c = new CalculadoraDerivadas();
+        String derivada = calculadora.derivar(funcion);
 
-        String derivada = c.derivar(funcion);
+        String factorizacion = calculadora.factorizar(derivada);
 
-        String factorizacion = c.factorizar(derivada);
+        txtResultado.setText("");
 
-        txtDerivada.setText(
-                "Derivada: " + derivada +
-                        "   |   Factorización: " + factorizacion
-        );
+        txtResultado.append("FUNCIÓN\n");
+        txtResultado.append("---------------------------------------------\n");
+        txtResultado.append(funcion + "\n\n");
+
+        txtResultado.append("DERIVADA\n");
+        txtResultado.append("---------------------------------------------\n");
+        txtResultado.append(derivada + "\n\n");
+
+        txtResultado.append("FACTORIZACIÓN\n");
+        txtResultado.append("---------------------------------------------\n");
+        txtResultado.append(factorizacion);
+    }
+
+    private void guardar() {
+
+        String funcion = txtFuncion.getText().trim();
+
+        if (funcion.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Primero calcule una derivada.");
+
+            return;
+        }
+
+        String derivada = calculadora.derivar(funcion);
+
+        String factorizacion = calculadora.factorizar(derivada);
 
         Derivada d = new Derivada();
+
         d.setFuncion(funcion);
         d.setDerivada(derivada);
         d.setFactorizacion(factorizacion);
 
-        new DerivadaDAO().guardar(d);
+        if (dao.guardar(d)) {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "Información guardada correctamente."
-        );
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Registro almacenado correctamente.");
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No fue posible guardar la información.");
+
+        }
+
+    }
+
+    private void limpiar() {
+
+        txtFuncion.setText("");
+        txtResultado.setText("");
+        txtFuncion.requestFocus();
+
     }
 }

@@ -8,57 +8,49 @@ public class CalculadoraDerivadas {
 
         switch (funcion) {
 
-            case "x":
-                return "1";
-
-            case "x2":
+            case "x^2-9":
                 return "2x";
 
-            case "x3":
-                return "3x2";
+            case "x^2+6x+9":
+                return "2x+6";
 
-            case "x4":
-                return "4x3";
+            case "3x^2-12x":
+                return "6x-12";
 
-            case "2x2":
-                return "4x";
+            case "5x^2+20x":
+                return "10x+20";
 
-            case "5x3":
-                return "15x2";
+            case "4x^3-12x^2":
+                return "12x^2-24x";
 
             default:
-                return "No implementada";
+                return "Derivada no disponible";
         }
-
     }
 
     public String factorizar(String derivada) {
 
         derivada = derivada.replace(" ", "");
 
-        // 4x = 4(x)
-        if (derivada.matches("\\d+x")) {
+        switch (derivada) {
 
-            String coef = derivada.replace("x", "");
+            case "2x":
+                return "2(x)";
 
-            return coef + "(x)";
+            case "2x+6":
+                return "2(x+3)";
+
+            case "6x-12":
+                return "6(x-2)";
+
+            case "10x+20":
+                return "10(x+2)";
+
+            case "12x^2-24x":
+                return "12x(x-2)";
+
+            default:
+                return "No factorizable";
         }
-
-        // 15x2 = 15(x²)
-        if (derivada.matches("\\d+x2")) {
-
-            String coef = derivada.replace("x2", "");
-
-            return coef + "(x²)";
-        }
-
-        // 4x3 = 4(x³)
-        if (derivada.matches("\\d+x3")) {
-
-            String coef = derivada.replace("x3", "");
-
-            return coef + "(x³)";
-        }
-        return derivada;
     }
 }
